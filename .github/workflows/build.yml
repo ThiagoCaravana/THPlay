@@ -24,7 +24,7 @@ jobs:
       - name: Instalar Cordova
         run: npm install -g cordova
 
-      - name: Criar Projeto Android Nativo com Permissões de Rede
+      - name: Criar Projeto Android Nativo
         run: |
           cordova create thplay_app com.thplay.app "THPlay"
           cd thplay_app
@@ -33,9 +33,10 @@ jobs:
           rm -rf www/*
           cp ../thplay.html www/index.html
 
-      - name: Liberar Conexões HTTP no Android
+      - name: Ajustar Nome do App e Permissões de Rede
         run: |
           cd thplay_app
+          sed -i 's/<name>HelloCordova<\/name>/<name>THPlay<\/name>/g' config.xml
           sed -i 's/<content src="index.html" \/>/<content src="index.html" \/>\n    <access origin="*" \/>\n    <allow-navigation href="*" \/>\n    <allow-intent href="*" \/>/' config.xml
 
       - name: Compilar APK Android
