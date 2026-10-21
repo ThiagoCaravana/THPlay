@@ -19,20 +19,16 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
 
-      - name: Instalar Gerador de APK
-        run: npm install -g @bubblewrap/cli
-
-      - name: Criar Projeto Android THPlay
+      - name: Gerar Projeto e APK com PWABuilder
         run: |
-          npx @bubblewrap/cli init --manifest=https://raw.githubusercontent.com/${{ github.repository }}/main/manifest.json --directory=android_app
-          cd android_app
-          npx @bubblewrap/cli build --skipSigning
+          npm install -g @pwabuilder/cli
+          pwa-builder https://raw.githack.com/${{ github.repository }}/main/manifest.json -o app_output -p android
 
       - name: Disponibilizar APK para Download
         uses: actions/upload-artifact@v4
         with:
           name: THPlay-APK
-          path: android_app/*.apk
+          path: app_output/**/*.apk
           
