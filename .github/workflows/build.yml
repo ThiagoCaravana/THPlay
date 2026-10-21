@@ -1,0 +1,32 @@
+name: Gerar APK THPlay
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar Código
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Instalar Gerador de APK
+        run: npm install -g bubblewrap
+
+      - name: Criar Projeto Android THPlay
+        run: |
+          npx @bubblewrap/cli init --manifest=https://raw.githubusercontent.com/${{ github.repository }}/main/manifest.json --directory=android_app
+          cd android_app
+          npx @bubblewrap/cli build
+
+      - name: Disponibilizar APK para Download
+        uses: actions/upload-artifact@v3
+        with:
+          name: THPlay-APK
+          path: android_app/*.apk
+          
