@@ -21,14 +21,25 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Gerar Projeto e APK com PWABuilder
+      - name: Instalar Cordova
+        run: npm install -g cordova
+
+      - name: Criar Projeto Android Nativo
         run: |
-          npm install -g @pwabuilder/cli
-          pwa-builder https://raw.githack.com/${{ github.repository }}/main/manifest.json -o app_output -p android
+          cordova create thplay_app com.thplay.app "THPlay"
+          cd thplay_app
+          cordova platform add android
+          rm -rf www/*
+          cp ../thplay.html www/index.html
+
+      - name: Compilar APK Android
+        run: |
+          cd thplay_app
+          cordova build android --debug
 
       - name: Disponibilizar APK para Download
         uses: actions/upload-artifact@v4
         with:
           name: THPlay-APK
-          path: app_output/**/*.apk
+          path: thplay_app/platforms/android/app/build/outputs/apk/debug/app-debug.apk
           
